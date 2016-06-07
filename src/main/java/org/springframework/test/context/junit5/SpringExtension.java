@@ -172,7 +172,7 @@ public class SpringExtension implements BeforeAllCallback, AfterAllCallback, Tes
 	 * application context
 	 * @see org.springframework.test.context.TestContext#getApplicationContext()
 	 */
-	private ApplicationContext getApplicationContext(Class<?> testClass) {
+	protected ApplicationContext getApplicationContext(Class<?> testClass) {
 		Assert.notNull(testClass, "testClass must not be null");
 		return getTestContextManager(testClass).getTestContext().getApplicationContext();
 	}
