@@ -7,6 +7,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class SpringExtensibleExtension extends SpringExtension {
 	/**
@@ -100,12 +101,10 @@ public class SpringExtensibleExtension extends SpringExtension {
 
 	private List<Extension> getExtensionBeans(Class<?> testClass, List<Class<? extends Extension>> extensionClasses) {
 		ApplicationContext applicationContext = getApplicationContext(testClass);
-		List<Extension> result = new ArrayList<Extension>(extensionClasses.size());
-		extensionClasses
+		return extensionClasses
 				.stream()
 				.map((Function<Class<? extends Extension>, Extension>) applicationContext::getBean)
-				.forEachOrdered(result::add);
-		return result;
+				.collect(Collectors.toList());
 	}
 
 	private List<Class<? extends Extension>> getExtensionClasses(Class<?> testClass) {
