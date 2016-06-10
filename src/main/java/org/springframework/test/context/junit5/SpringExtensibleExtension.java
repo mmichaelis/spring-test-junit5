@@ -8,6 +8,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+import static org.junit.gen5.commons.util.AnnotationUtils.findRepeatableAnnotations;
+
 public class SpringExtensibleExtension extends SpringExtension {
 	/**
 	 * Cache of {@code TestContextManagers} keyed by test class.
@@ -107,10 +110,10 @@ public class SpringExtensibleExtension extends SpringExtension {
 	}
 
 	private List<Class<? extends Extension>> getExtensionClasses(Class<?> testClass) {
-		SpringExtendWith[] annotations = testClass.getAnnotationsByType(SpringExtendWith.class);
-		List<Class<? extends Extension>> extensionClasses = new ArrayList<>();
-		Arrays.stream(annotations).forEachOrdered(springExtendWith -> extensionClasses.addAll(Arrays.asList(springExtendWith.value())));
-		return extensionClasses;
+		return findRepeatableAnnotations(testClass, SpringExtendWith.class).stream()
+				.map(SpringExtendWith::value)
+				.flatMap(Arrays::stream)
+				.collect(toList());
 	}
 
 }
