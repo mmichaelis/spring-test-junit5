@@ -5,7 +5,6 @@ import org.springframework.context.ApplicationContext;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -109,7 +108,7 @@ public class SpringExtensibleExtension extends SpringExtension {
 
 	private List<Class<? extends Extension>> getExtensionClasses(Class<?> testClass) {
 		SpringExtendWith[] annotations = testClass.getAnnotationsByType(SpringExtendWith.class);
-		List<Class<? extends Extension>> extensionClasses = new ArrayList<Class<? extends Extension>>();
+		List<Class<? extends Extension>> extensionClasses = new ArrayList<>();
 		Arrays.stream(annotations).forEachOrdered(springExtendWith -> extensionClasses.addAll(Arrays.asList(springExtendWith.value())));
 		return extensionClasses;
 	}
