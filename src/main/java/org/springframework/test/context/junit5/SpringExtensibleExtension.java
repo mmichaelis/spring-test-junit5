@@ -101,29 +101,17 @@ public class SpringExtensibleExtension extends SpringExtension {
 	private List<Extension> getExtensionBeans(Class<?> testClass, List<Class<? extends Extension>> extensionClasses) {
 		ApplicationContext applicationContext = getApplicationContext(testClass);
 		List<Extension> result = new ArrayList<Extension>(extensionClasses.size());
-		extensionClasses.stream().map(new Function<Class<? extends Extension>, Extension>() {
-			@Override
-			public Extension apply(Class<? extends Extension> extensionClass) {
-				return applicationContext.getBean(extensionClass);
-			}
-		}).forEachOrdered(new Consumer<Extension>() {
-			@Override
-			public void accept(Extension extension) {
-				result.add(extension);
-			}
-		});
+		extensionClasses
+				.stream()
+				.map((Function<Class<? extends Extension>, Extension>) applicationContext::getBean)
+				.forEachOrdered(result::add);
 		return result;
 	}
 
 	private List<Class<? extends Extension>> getExtensionClasses(Class<?> testClass) {
 		SpringExtendWith[] annotations = testClass.getAnnotationsByType(SpringExtendWith.class);
 		List<Class<? extends Extension>> extensionClasses = new ArrayList<Class<? extends Extension>>();
-		Arrays.stream(annotations).forEachOrdered(new Consumer<SpringExtendWith>() {
-			@Override
-			public void accept(SpringExtendWith springExtendWith) {
-				extensionClasses.addAll(Arrays.asList(springExtendWith.value()));
-			}
-		});
+		Arrays.stream(annotations).forEachOrdered(springExtendWith -> extensionClasses.addAll(Arrays.asList(springExtendWith.value())));
 		return extensionClasses;
 	}
 
